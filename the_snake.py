@@ -63,6 +63,42 @@ class GameObject:
         """        
         pass
 
+class Apple(GameObject):
+    """
+    Класс Apple. Наследуется от GameObject.
+    Появлется в случайном месте поля.
+    """    
+
+    super.__init__(position=None, body_color=APPLE_COLOR)
+
+    self.radomize_position()
+
+    def radomize_position(self):
+        """
+        Устанавливает случайные координаты для яблока.
+        """
+        max_x = 640 - 20
+        max_y = 480 - 20
+
+        x.random.randrage(0, max_x + 1, 20)
+        y.random.randrage(0, max_y + 1, 20)
+
+        self.position = (x, y)
+
+    def draw(self, surface):
+        """
+        Отрисовывает яблоко на игровом поле. 
+        """
+
+        rect = pygame.Rect(
+            self.position[0],
+            self.position[1],
+            20,
+            20
+        )
+
+        pygame.draw.rect(surface, self.body_color, rect)
+
 
 def main():
     # Инициализация PyGame:
