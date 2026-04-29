@@ -82,8 +82,8 @@ class Snake(GameObject):
     def update_direction(self):
      """Обновляет направление, запрещая разворот."""
         if self.next_direction:
-            is_opposite = (self.next_direction[0] == -self.direction[0] and
-                           self.next_direction[1] == -self.direction[1])
+            is_opposite = (self.next_direction[0] == -self.direction[0]
+                           and self.next_direction[1] == -self.direction[1])
             if not is_opposite:
                 self.direction = self.next_direction
             self.next_direction = None
