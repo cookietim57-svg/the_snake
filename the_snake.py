@@ -99,6 +99,88 @@ class Apple(GameObject):
 
         pygame.draw.rect(surface, self.body_color, rect)
 
+class Snake(GameObject):
+    """Класс змейки."""
+
+    def __init__(self):
+        # Начальная позиция: центр экрана (состоит из одного сегмента)
+        start_x = GRID_WIDTH // 2 * GRID_SIZE
+        start_y = GRID_HEIGHT // 2 * GRID_SIZE
+        self.positions = [(start_x, start_y)]
+        self.direction = RIGHT
+        self.next_direction = None
+        self.last = None          # Позиция последнего сегмента перед движением (для затирания)
+        super().__init__(body_color=SNAKE_COLOR)
+
+    def update_direction(self):
+        """Обновляет направление движения, если новое направление не противоположно текущему."""
+        if self.next_direction:
+            # Запрещаем разворот на 180 градусов
+            if (self.next_direction[0] != -self.direction[0] or
+                self.next_direction[1] != -self.direction[1]):
+                self.direction = self.next_direction
+            self.next_direction = None
+
+    def move(self, ate_apple=False):
+        """Перемещает змейку. Если ate_apple=True, то сегмент не удаляется."""
+        head_x, head_y = self.positions[0]
+        dx, dy = self.direction
+        new_head = (head_x + dx * GRID_SIZE, head_y + dy * GRID_SIZE)
+        self.positions.insert(0, new_head)
+        if not ate_apple:
+            self.last = self.positions.pop()
+        else:
+            self.last = None
+
+    def draw(self, surface):
+        """Рисует змейку. Хвост затирается через self.last."""
+        for i, position in enumerate(self.positions):
+            rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
+            pygame.draw.rect(surface, self.body_color, rect)
+            pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
+        # Затираем последний сегмент, если змейка не удлинилась
+        if self.last:
+            last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
+            pygame.draw.rect(surface, BOARD_BACKGROUND_COLOR, last_rect)
+
+    def check_collision(self):
+        """Проверяет столкновение головы с границами поля или с телом."""
+        head = self.positions[0]
+        # Выход за границы
+        if (head[0] < 0 or head[0] >= SCREEN_WIDTH or
+            head[1] < 0 or head[1] >= SCREEN_HEIGHT):
+            return True
+        # Самопересечение (голова столкнулась с любым другим сегментом)
+        if head in self.positions[1:]:
+            return True
+        return False
+
+    def get_head_position(self):
+        """Возвращает позицию головы."""
+        return self.positions[0]
+
+    def get_positions(self):
+        """Возвращает список всех сегментов для проверки свободных клеток."""
+        return self.positions
+
+
+def handle_keys(snake):
+    """Обрабатывает нажатия клавиш для управления змейкой."""
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            raise SystemExit
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP and snake.direction != DOWN:
+                snake.next_direction = UP
+            elif event.key == pygame.K_DOWN and snake.direction != UP:
+                snake.next_direction = DOWN
+            elif event.key == pygame.K_LEFT and snake.direction != RIGHT:
+                snake.next_direction = LEFT
+            elif event.key == pygame.K_RIGHT and snake.direction != LEFT:
+                snake.next_direction = RIGHT
+                
+
 
 def main():
     # Создаём объекты игры
