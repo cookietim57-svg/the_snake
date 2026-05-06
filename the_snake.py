@@ -44,7 +44,7 @@ def draw(self, surface):
         pass
 
 class Apple(GameObject):
-    """Яблоко, которое увеличивает змейку."""
+    """Класс яблока, наследуется от GameObject."""
 
     def __init__(self, snake_positions):
         """Создаёт яблоко в случайной свободной клетке."""
@@ -52,7 +52,7 @@ class Apple(GameObject):
         self.snake_positions = snake_positions
         self.randomize_position()
         def randomize_position(self):
-        """Устанавливает новую позицию, не занятую змейкой."""
+         """Устанавливает случайную позицию яблока на игровом поле."""
         while True:
             x = random.randint(0, GRID_WIDTH - 1) * GRID_SIZE
             y = random.randint(0, GRID_HEIGHT - 1) * GRID_SIZE
@@ -61,7 +61,7 @@ class Apple(GameObject):
                 break
 
     def draw(self, surface):
-         """Рисует яблоко (квадрат с рамкой)."""
+        """Отрисовывает яблоко на игровой поверхности."""
         rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(surface, self.body_color, rect)
         pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
